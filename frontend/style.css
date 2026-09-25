@@ -1,7 +1,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #e1cdbc;
     margin: 0;
     padding: 0;
 }
@@ -9,7 +9,7 @@ body {
 .container {
     width: 550px;
     margin: 80px auto;
-    background-color: white;
+    background-color: rgb(66, 182, 214);
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -42,7 +42,7 @@ button {
 }
 
 #addButton {
-    background-color: #2196f3;
+    background-color: #071ff9;
     color: white;
 }
 
@@ -60,10 +60,10 @@ button {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px;
-    margin-bottom: 10px;
-    background-color: #f1f1f1;
-    border-radius: 5px;
+    padding: 9.4px;
+    margin-bottom: 8px;
+    background-color: #ffab02;
+    border-radius: 20px;
 }
 
 .todo-text {
@@ -72,30 +72,66 @@ button {
 }
 
 .completed {
-    text-decoration: line-through;
-    color: gray;
+    text-decoration-line: line-through;
+    text-decoration-thickness: 2px;
+    text-decoration-color: rgb(47, 46, 46);
+    color: rgb(8, 8, 8);
+    opacity: 0.65;
 }
 
 .button-group {
     display: flex;
-    gap: 5px;
+    gap: 15px;
 }
 
-.edit-button {
-    background-color: #ff9800;
+.todo-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 25px;
+    height: 25px;
+
+    border: 2px solid black;
+    border-radius: 4px;
+
+    background-color: white;
+
+    cursor: pointer;
+
+    position: relative;
+    flex-shrink: 0;
+}
+
+/* Checked checkbox */
+.todo-checkbox:checked::after {
+    content: "✓";
+
+    position: absolute;
+
+    left: .01px;
+    top: -10.5px;
+
+    font-size:30px;
+    font-weight: 900;
+
+    color: green;
+}
+
+.Update-button {
+    background-color: #6b3de9;
     color: white;
 }
 
 .delete-button {
-    background-color: #f44336;
+    background-color: #f81d0d;
     color: white;
 }
 
 .edit-button:hover {
-    background-color: #e68900;
+    background-color: #c4ad8b;
 }
 
 .delete-button:hover {
-    background-color: #d32f2f;
+    background-color: #f23434;
 }
 

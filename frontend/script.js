@@ -1,166 +1,4 @@
 
-// // Temporary todo data
-// // Later this will come from the Spring Boot REST API.
-
-// let todos = [];
-
-
-// // ===============================
-// // ADD TODO
-// // ===============================
-
-// function addTodo() {
-
-//     const input = document.getElementById("todoInput");
-
-//     const task = input.value.trim();
-
-//     if (task === "") {
-//         alert("Please enter a task.");
-//         return;
-//     }
-
-//     const todo = {
-//         id: Date.now(),
-//         task: task,
-//         completed: false
-//     };
-
-//     todos.push(todo);
-
-//     input.value = "";
-
-//     displayTodos();
-// }
-
-
-// // ===============================
-// // VIEW TODOS
-// // ===============================
-
-// function displayTodos() {
-
-//     const todoList = document.getElementById("todoList");
-
-//     todoList.innerHTML = "";
-
-//     todos.forEach(function(todo) {
-
-//         const li = document.createElement("li");
-
-//         li.className = "todo-item";
-
-//         const span = document.createElement("span");
-
-//         span.className = "todo-text";
-
-//         span.textContent = todo.task;
-
-//         if (todo.completed) {
-//             span.classList.add("completed");
-//         }
-
-
-//         // Button container
-//         const buttonGroup = document.createElement("div");
-
-//         buttonGroup.className = "button-group";
-
-
-//         // Edit button
-//         const editButton = document.createElement("button");
-
-//         editButton.textContent = "Edit";
-
-//         editButton.className = "edit-button";
-
-//         editButton.onclick = function() {
-//             editTodo(todo.id);
-//         };
-
-
-//         // Delete button
-//         const deleteButton = document.createElement("button");
-
-//         deleteButton.textContent = "Delete";
-
-//         deleteButton.className = "delete-button";
-
-//         deleteButton.onclick = function() {
-//             deleteTodo(todo.id);
-//         };
-
-
-//         buttonGroup.appendChild(editButton);
-//         buttonGroup.appendChild(deleteButton);
-
-//         li.appendChild(span);
-//         li.appendChild(buttonGroup);
-
-//         todoList.appendChild(li);
-//     });
-// }
-
-
-// // ===============================
-// // UPDATE / EDIT TODO
-// // ===============================
-
-// function editTodo(id) {
-
-//     const todo = todos.find(function(todo) {
-//         return todo.id === id;
-//     });
-
-//     if (!todo) {
-//         return;
-//     }
-
-//     const newTask = prompt("Edit your task:", todo.task);
-
-//     if (newTask === null) {
-//         return;
-//     }
-
-//     const updatedTask = newTask.trim();
-
-//     if (updatedTask === "") {
-//         alert("Task cannot be empty.");
-//         return;
-//     }
-
-//     todo.task = updatedTask;
-
-//     displayTodos();
-// }
-
-
-// // ===============================
-// // DELETE TODO
-// // ===============================
-
-// function deleteTodo(id) {
-
-//     const confirmDelete = confirm("Are you sure you want to delete this task?");
-
-//     if (!confirmDelete) {
-//         return;
-//     }
-
-//     todos = todos.filter(function(todo) {
-//         return todo.id !== id;
-//     });
-
-//     displayTodos();
-// }
-
-
-// // ===============================
-// // INITIAL DISPLAY
-// // ===============================
-
-// displayTodos();
-
 const API_URL = "http://localhost:8080/todos";
 
 
@@ -245,74 +83,169 @@ async function loadTodos() {
 // ===============================
 
 function displayTodos(todos) {
-
     const todoList = document.getElementById("todoList");
-
     todoList.innerHTML = "";
 
     todos.forEach(function(todo) {
 
         const li = document.createElement("li");
-
         li.className = "todo-item";
 
+        // Checkbox
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = todo.completed;
+        checkbox.className = "todo-checkbox";
 
+        checkbox.onchange = function() {
+            updateCompletedStatus(
+                todo.id,
+                todo.task,
+                checkbox.checked
+            );
+        };
+
+        // Task text
         const span = document.createElement("span");
-
         span.className = "todo-text";
-
         span.textContent = todo.task;
 
         if (todo.completed) {
             span.classList.add("completed");
         }
 
-
-        // Button container
-        const buttonGroup = document.createElement("div");
-
-        buttonGroup.className = "button-group";
-
-
         // Edit button
         const editButton = document.createElement("button");
-
-        editButton.textContent = "Edit";
-
-        editButton.className = "edit-button";
+        editButton.textContent = "Update";
+        editButton.className = "update-button";
 
         editButton.onclick = function() {
-
             editTodo(todo.id);
-
         };
-
 
         // Delete button
         const deleteButton = document.createElement("button");
-
         deleteButton.textContent = "Delete";
-
         deleteButton.className = "delete-button";
 
         deleteButton.onclick = function() {
-
             deleteTodo(todo.id);
-
         };
 
+        // Button group
+        const buttonGroup = document.createElement("div");
+        buttonGroup.className = "button-group";
 
         buttonGroup.appendChild(editButton);
-
         buttonGroup.appendChild(deleteButton);
 
+        // Add everything to the list item
+        li.appendChild(checkbox);
         li.appendChild(span);
-
         li.appendChild(buttonGroup);
 
         todoList.appendChild(li);
     });
 }
+
+async function updateCompletedStatus(id, task, completed) {
+
+    const todo = {
+        task: task,
+        completed: completed
+    };
+
+    try {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(todo)
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to update completed status");
+        }
+
+        loadTodos();
+
+    } catch (error) {
+        console.error(error);
+        alert("Could not update task status.");
+    }
+}
+
+
+// function displayTodos(todos) {
+
+//     const todoList = document.getElementById("todoList");
+
+//     todoList.innerHTML = "";
+
+//     todos.forEach(function(todo) {
+
+//         const li = document.createElement("li");
+
+//         li.className = "todo-item";
+
+
+//         const span = document.createElement("span");
+
+//         span.className = "todo-text";
+
+//         span.textContent = todo.task;
+
+//         if (todo.completed) {
+//             span.classList.add("completed");
+//         }
+
+
+//         // Button container
+//         const buttonGroup = document.createElement("div");
+
+//         buttonGroup.className = "button-group";
+
+
+//         // Edit button
+//         const editButton = document.createElement("button");
+
+//         editButton.textContent = "Edit";
+
+//         editButton.className = "edit-button";
+
+//         editButton.onclick = function() {
+
+//             editTodo(todo.id);
+
+//         };
+
+
+//         // Delete button
+//         const deleteButton = document.createElement("button");
+
+//         deleteButton.textContent = "Delete";
+
+//         deleteButton.className = "delete-button";
+
+//         deleteButton.onclick = function() {
+
+//             deleteTodo(todo.id);
+
+//         };
+
+
+//         buttonGroup.appendChild(editButton);
+
+//         buttonGroup.appendChild(deleteButton);
+
+//         li.appendChild(span);
+
+//         li.appendChild(buttonGroup);
+
+//         todoList.appendChild(li);
+//     });
+// }
 
 
 // ===============================
@@ -321,7 +254,7 @@ function displayTodos(todos) {
 
 async function editTodo(id) {
 
-    const newTask = prompt("Edit your task:");
+    const newTask = prompt("Update your task:");
 
     if (newTask === null) {
         return;
